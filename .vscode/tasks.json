@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "./makeAll.sh",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "group": "test",
+            "label": "test",
+            "type": "shell",
+            "command": "./test/runTests.sh",
+            "dependsOn": [
+                "build"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}
