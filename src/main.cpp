@@ -4,18 +4,21 @@
 int main(){
     auto& logger = Logger::instance();
 
-    logger.log(Logger::LogLevel::INFO, "Hello World!");
-
     Game game;
     game.addPlayer("Shaggy");
     game.addPlayer("Scooby");
 
+
+    game.deal();
+    std::cout << "-----" << std::endl;
+    std::cout << "Racko" << std::endl;
+    std::cout << "-----" << std::endl;
     while (!game.gameOver())
     {
-        std::cout << "game.turn_: " << game.turn() << std::endl;
         game.playTurn();
     }
 
+    std::cout << "Game Over!" << std::endl;
     std::cout << game.toString() << std::endl;
 
     // Singleton cleanup
