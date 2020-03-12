@@ -110,7 +110,21 @@ bool Player::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
         while (!valid_input)
         {
             std::cout << "Swap drawn card " << drawn_card << " with a card in a slot:" << std::endl;
+            std::cout << "Current slots:" << std::endl;
             std::cout << slotsToString(true) << std::endl;
+            std::cout << "Choose slot to swap with drawn card " << drawn_card << ". (input: ";
+            auto i = 0;
+            std::string del = "";
+            while (i < 2 and i < Player::NUM_SLOTS)
+            {
+                std::cout << del << slotLabel(i);
+                if (del == "")
+                {
+                    del = ", ";
+                }
+                i ++;
+            }
+            std::cout << ", etc...)" << std::endl;
             std::cout << ">";
             std::cin >> slot_choice;
             slot_choice_index = slotIndex(slot_choice);
@@ -126,6 +140,9 @@ bool Player::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
         std::cout << "Swapping card in slot " << slot_choice_index << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
 
         slots_[slot_choice_index] = drawn_card;
+
+        std::cout << "Current slots after swapping:" << std::endl;
+        std::cout << slotsToString(true) << std::endl;
 
         std::cout << "Discarding swapped card (" << swapped_card << ") onto discard pile." << std::endl;
         discard.push(swapped_card);
