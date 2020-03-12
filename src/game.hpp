@@ -23,6 +23,9 @@ public:
     std::string discardToString() const;
     friend std::ostream& operator<<(std::ostream& os, const Game& g);
 
+    static constexpr int MAX_TERM_WIDTH = 80;
+    static constexpr int MAX_CARD_VALUE = 50;
+
 private:
     std::string pileToString(const std::stack<int>& pile) const;
 
@@ -31,7 +34,6 @@ private:
     int turn_;
     std::stack<int> draw_;
     std::stack<int> discard_;
-    static constexpr int MAX_CARD_VALUE = 50;
 };
 
 

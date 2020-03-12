@@ -86,13 +86,18 @@ std::string Game::playersToString() const
     std::stringstream ss;
     ss << "Game::players_:" << std::endl;
     bool first = true;
+    std::string del = "";
     for (auto player : players_)
     {
         if (!first)
         {
             ss << std::endl;
         }
-        ss << player;
+        ss << del << player;
+        if (del == "")
+        {
+            del = ",";
+        }
     }
     return ss.str();
 }

@@ -5,8 +5,8 @@ int main(){
     auto& logger = Logger::instance();
 
     Game game;
-    game.addPlayer("Shaggy");
-    game.addPlayer("Scooby");
+    game.addPlayer("Becca");
+    game.addPlayer("Max");
 
 
     game.deal();
