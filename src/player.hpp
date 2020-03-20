@@ -11,13 +11,14 @@ class Player
 public:
     static constexpr int NUM_SLOTS = 10;
 
-private:
+protected:
     std::string name_;
     std::array<int, NUM_SLOTS> slots_;
 
 public:
     Player();
     Player(const std::string &name);
+    virtual ~Player(){};
 
     std::string name() const;
     void name(const std::string &name);
@@ -28,7 +29,7 @@ public:
     int slot(const int idx) const;
     void slot(const int idx, const int val);
 
-    bool takeTurn(std::stack<int>& draw, std::stack<int>& discard);
+    virtual bool takeTurn(std::stack<int>& draw, std::stack<int>& discard) = 0;
 
     bool hasRacko() const;
     std::string toString() const;

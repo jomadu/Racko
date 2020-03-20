@@ -1,4 +1,6 @@
 #include "game.hpp"
+#include "human.hpp"
+#include "computer.hpp"
 #include <random>
 #include <algorithm>
 #include <iterator>
@@ -26,7 +28,7 @@ Game::Game() : game_over_(false), turn_(0)
 
     discard_.push(first_discard);
 }
-std::vector<Player> Game::players() const
+std::vector<std::shared_ptr<Player>> Game::players() const
 {
     return players_;
 }
@@ -35,10 +37,15 @@ int Game::turn() const
     return turn_;
 }
 
-void Game::addPlayer(const std::string &name)
+void Game::addHuman(const std::string &name)
 {
-    players_.emplace_back(name);
+    players_.push_back(std::make_shared<Human>(name));
 }
+void Game::addComputer(const std::string& name)
+{
+    players_.push_back(std::make_shared<Computer>(name));
+}
+
 void Game::deal()
 {
     for (auto i = 0; i < Player::NUM_SLOTS; i++)
@@ -47,7 +54,7 @@ void Game::deal()
         {
             auto card = draw_.top();
             draw_.pop();
-            player.slot(i, card);
+            player->slot(i, card);
         }
     }
 }
@@ -55,7 +62,7 @@ void Game::playTurn()
 {
     if (players_.size() > 0)
     {
-        if (players_.at(playerTurn()).takeTurn(draw_, discard_))
+        if (players_.at(playerTurn())->takeTurn(draw_, discard_))
         {
             game_over_ = true;
         }
@@ -64,6 +71,11 @@ void Game::playTurn()
             turn_++;
         }
     }
+    else
+    {
+        game_over_ = true;
+    }
+    
 }
 bool Game::gameOver() const
 {
