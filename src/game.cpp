@@ -41,7 +41,7 @@ void Game::addHuman(const std::string &name)
 {
     players_.push_back(std::make_shared<Human>(name));
 }
-void Game::addComputer(const std::string& name)
+void Game::addComputer(const std::string &name)
 {
     players_.push_back(std::make_shared<Computer>(name));
 }
@@ -75,7 +75,9 @@ void Game::playTurn()
     {
         game_over_ = true;
     }
-    
+    if (draw_.size() == 0)
+    {
+    }
 }
 bool Game::gameOver() const
 {
@@ -85,6 +87,28 @@ int Game::playerTurn() const
 {
     return turn_ % players_.size();
 }
+void Game::restoreDrawFromDiscard()
+{
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    auto top_discard = discard_.top();
+    discard_.pop();
+
+    std::vector<int> vals;
+    while (!discard_.empty())
+    {
+        vals.push_back(discard_.top());
+        discard_.pop();
+    }
+    std::shuffle(vals.begin(), vals.end(), g);
+
+    for (auto val : vals)
+    {
+        draw_.push(val);
+    }
+}
+
 std::string Game::toString() const
 {
     std::stringstream ss;

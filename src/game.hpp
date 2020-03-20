@@ -19,6 +19,7 @@ public:
     void playTurn();
     bool gameOver() const;
     int playerTurn() const;
+    void restoreDrawFromDiscard();
     std::string toString() const;
     std::string playersToString() const;
     std::string drawToString() const;

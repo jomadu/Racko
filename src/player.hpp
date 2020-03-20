@@ -34,8 +34,9 @@ public:
     bool hasRacko() const;
     std::string toString() const;
     std::string slotsToString(const bool formatted = false) const;
-    static int slotIndex(const int label);
-    static int slotLabel(const int index);
+    static int slotIndex(const int val);
+    static int slotHuer(const int index);
+    static int slotStepSize();
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 };
 

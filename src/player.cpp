@@ -83,7 +83,7 @@ std::string Player::slotsToString(const bool formatted) const
             auto digits_in_curr_card_val = ceil(log10(card_val));
             std::string slot_delim = ":";
             auto num_dashes = int(card_val / float(Game::MAX_CARD_VALUE) * (Game::MAX_TERM_WIDTH - digits_in_max_card_val - slot_delim.size())) - digits_in_curr_card_val;
-            ss << std::setw(digits_in_max_card_val) << slotLabel(i) << slot_delim;
+            ss << std::setw(digits_in_max_card_val) << slotHuer(i) << slot_delim;
             while (num_dashes > 0)
             {
                 ss << '-';
@@ -107,29 +107,29 @@ std::string Player::slotsToString(const bool formatted) const
 
     return ss.str();
 }
-int Player::slotIndex(const int label)
+int Player::slotIndex(const int val)
 {
     int ret  = -1;
-    if (label % (Game::MAX_CARD_VALUE / Player::NUM_SLOTS) == 0)
+    if (val >= 0 && val <= Game::MAX_CARD_VALUE)
     {
-        auto index = label * Player::NUM_SLOTS / Game::MAX_CARD_VALUE - 1;
-        if (index >= 0 and index < Player::NUM_SLOTS)
-        {
-            ret = index;
-        }
+        ret = (val - 1) / slotStepSize();
     }
     return ret;
 }
-int Player::slotLabel(const int index)
+int Player::slotHuer(const int index)
 {
     if (index >= 0 and index < Player::NUM_SLOTS)
     {
-        return (index + 1) * Game::MAX_CARD_VALUE / Player::NUM_SLOTS;
+        return (index + 1) * slotStepSize();
     }
     else
     {
         return -1;
     }
+}
+int Player::slotStepSize()
+{
+    return Game::MAX_CARD_VALUE / Player::NUM_SLOTS;
 }
 
 std::ostream &operator<<(std::ostream &os, const Player &p)

@@ -69,7 +69,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
             std::string del = "";
             while (i < 2 and i < Human::NUM_SLOTS)
             {
-                std::cout << del << slotLabel(i);
+                std::cout << del << slotHuer(i);
                 if (del == "")
                 {
                     del = ", ";
@@ -80,7 +80,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
             std::cout << ">";
             std::cin >> slot_choice;
             slot_choice_index = slotIndex(slot_choice);
-            valid_input = slot_choice_index >= 0;
+            valid_input = slot_choice % slotStepSize() == 0 && slot_choice_index >= 0;
             if (!valid_input)
             {
                 std::cout << "Invalid input: must be between a slot number." << std::endl;

@@ -6,103 +6,36 @@ bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
               << "### COMPUTER: " << name_ << "'s turn! ###" << std::endl;
     std::cout << "Current slots: " << std::endl;
     std::cout << slotsToString(true) << std::endl;
-    int draw_choice = -1;
-    bool valid_input = false;
-    while (!valid_input)
-    {
-        std::cout << "Draw from:" << std::endl;
-        std::cout << "[0] - Draw Pile    : ???" << std::endl;
-        std::cout << "[1] - Discard Pile : " << discard.top() << std::endl;
-        std::cout << ">";
-        std::cin >> draw_choice;
-        valid_input = draw_choice == 0 || draw_choice == 1;
-        if (!valid_input)
-        {
-            std::cout << "Invalid input: must be 0 or 1" << std::endl;
-        }
-    }
 
-    int drawn_card;
-    if (draw_choice == 0)
+    auto discard_best_slot = bestSlot(discard.top());
+    if (discard_best_slot >= 0)
     {
-        drawn_card = draw.top();
-        draw.pop();
-
-        std::cout << "Drew from draw pile: " << drawn_card << std::endl;
-    }
-    else
-    {
-        drawn_card = discard.top();
+        auto drawn_card = discard.top();
         discard.pop();
-
         std::cout << "Drew from discard pile: " << drawn_card << std::endl;
-    }
-
-    int swap_choice = -1;
-    valid_input = false;
-    while (!valid_input)
-    {
-        std::cout << "Current slots: " << std::endl;
-        std::cout << slotsToString(true) << std::endl;
-        std::cout << "Drew card " << drawn_card << ":" << std::endl;
-        std::cout << "[0] - Discard" << std::endl;
-        std::cout << "[1] - Swap with a card in a slot" << std::endl;
-        std::cin >> swap_choice;
-        valid_input = swap_choice == 0 || swap_choice == 1;
-        if (!valid_input)
-        {
-            std::cout << "Invalid input: must be 0 or 1" << std::endl;
-        }
-    }
-    if (swap_choice == 1)
-    {
-        int slot_choice = -1;
-        int slot_choice_index = -1;
-        valid_input = false;
-        while (!valid_input)
-        {
-            std::cout << "Swap drawn card " << drawn_card << " with a card in a slot:" << std::endl;
-            std::cout << "Current slots:" << std::endl;
-            std::cout << slotsToString(true) << std::endl;
-            std::cout << "Choose slot to swap with drawn card " << drawn_card << ". (input: ";
-            auto i = 0;
-            std::string del = "";
-            while (i < 2 and i < Computer::NUM_SLOTS)
-            {
-                std::cout << del << slotLabel(i);
-                if (del == "")
-                {
-                    del = ", ";
-                }
-                i ++;
-            }
-            std::cout << ", etc...)" << std::endl;
-            std::cout << ">";
-            std::cin >> slot_choice;
-            slot_choice_index = slotIndex(slot_choice);
-            valid_input = slot_choice_index >= 0;
-            if (!valid_input)
-            {
-                std::cout << "Invalid input: must be between a slot number." << std::endl;
-            }
-        }
-
-        auto swapped_card = slots_.at(slot_choice_index);
-
-        std::cout << "Swapping card in slot " << slot_choice_index << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
-
-        slots_[slot_choice_index] = drawn_card;
-
-        std::cout << "Current slots after swapping:" << std::endl;
-        std::cout << slotsToString(true) << std::endl;
-
-        std::cout << "Discarding swapped card (" << swapped_card << ") onto discard pile." << std::endl;
+        auto swapped_card = slots_.at(discard_best_slot);
+        std::cout << "Swapping card in slot " << discard_best_slot << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+        slots_.at(discard_best_slot) = drawn_card;
         discard.push(swapped_card);
     }
     else
     {
-        std::cout << "Discarding drawn card (" << drawn_card << ") onto discard pile." << std::endl;
-        discard.push(drawn_card);
+        auto drawn_card = draw.top();
+        draw.pop();
+        std::cout << "Drew from draw pile: " << drawn_card << std::endl;
+        auto draw_best_slot = bestSlot(drawn_card);
+        if (draw_best_slot >= 0)
+        {
+            auto swapped_card = slots_.at(draw_best_slot);
+            std::cout << "Swapping card in slot " << draw_best_slot << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+            slots_.at(draw_best_slot) = drawn_card;
+            discard.push(swapped_card);
+        }
+        else
+        {
+            std::cout << "Discarding drawn card (" << drawn_card << ") onto discard pile." << std::endl;
+            discard.push(drawn_card);
+        }
     }
 
     bool has_racko = hasRacko();
@@ -116,4 +49,25 @@ bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     }
 
     return hasRacko();
+}
+
+int Computer::bestSlot(int card) const
+{
+    auto ret = -1;
+
+    // card is 38, we'd want to check if slot labeled 35 has a good card
+    auto step_size = slotStepSize();
+    auto card_slot_index = slotIndex(card);
+    if (card_slot_index >= 0)
+    {
+        auto lower_bound_inc = step_size * card_slot_index;
+        auto upper_bound = step_size * (card_slot_index + 1);
+        auto existing_card = slots_.at(card_slot_index);
+        if (existing_card < lower_bound_inc || existing_card >= upper_bound)
+        {
+            ret = card_slot_index;
+        }
+    }
+
+    return ret;
 }
