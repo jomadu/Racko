@@ -12,9 +12,9 @@ bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     {
         auto drawn_card = discard.top();
         discard.pop();
-        std::cout << "Drew from discard pile: " << drawn_card << std::endl;
+        std::cout << "Drew from discard pile: (" << drawn_card << ")" << std::endl;
         auto swapped_card = slots_.at(discard_best_slot);
-        std::cout << "Swapping card in slot " << discard_best_slot << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+        std::cout << "Swapping card in slot " << slotValue(discard_best_slot) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
         slots_.at(discard_best_slot) = drawn_card;
         discard.push(swapped_card);
     }
@@ -22,12 +22,12 @@ bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     {
         auto drawn_card = draw.top();
         draw.pop();
-        std::cout << "Drew from draw pile: " << drawn_card << std::endl;
+        std::cout << "Drew from draw pile: (" << drawn_card << ")" << std::endl;
         auto draw_best_slot = bestSlot(drawn_card);
         if (draw_best_slot >= 0)
         {
             auto swapped_card = slots_.at(draw_best_slot);
-            std::cout << "Swapping card in slot " << draw_best_slot << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+            std::cout << "Swapping card in slot " << slotValue(draw_best_slot) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
             slots_.at(draw_best_slot) = drawn_card;
             discard.push(swapped_card);
         }
@@ -55,15 +55,14 @@ int Computer::bestSlot(int card) const
 {
     auto ret = -1;
 
-    // card is 38, we'd want to check if slot labeled 35 has a good card
     auto step_size = slotStepSize();
     auto card_slot_index = slotIndex(card);
     if (card_slot_index >= 0)
     {
-        auto lower_bound_inc = step_size * card_slot_index;
-        auto upper_bound = step_size * (card_slot_index + 1);
+        auto upper_bound_inc = step_size * (card_slot_index + 1);
+        auto lower_bound = step_size * (card_slot_index);
         auto existing_card = slots_.at(card_slot_index);
-        if (existing_card < lower_bound_inc || existing_card >= upper_bound)
+        if (existing_card <= lower_bound || existing_card > upper_bound_inc)
         {
             ret = card_slot_index;
         }

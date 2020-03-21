@@ -37,15 +37,6 @@ int Game::turn() const
     return turn_;
 }
 
-void Game::addHuman(const std::string &name)
-{
-    players_.push_back(std::make_shared<Human>(name));
-}
-void Game::addComputer(const std::string &name)
-{
-    players_.push_back(std::make_shared<Computer>(name));
-}
-
 void Game::deal()
 {
     for (auto i = 0; i < Player::NUM_SLOTS; i++)

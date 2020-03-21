@@ -83,7 +83,7 @@ std::string Player::slotsToString(const bool formatted) const
             auto digits_in_curr_card_val = ceil(log10(card_val));
             std::string slot_delim = ":";
             auto num_dashes = int(card_val / float(Game::MAX_CARD_VALUE) * (Game::MAX_TERM_WIDTH - digits_in_max_card_val - slot_delim.size())) - digits_in_curr_card_val;
-            ss << std::setw(digits_in_max_card_val) << slotHuer(i) << slot_delim;
+            ss << std::setw(digits_in_max_card_val) << slotValue(i) << slot_delim;
             while (num_dashes > 0)
             {
                 ss << '-';
@@ -109,6 +109,7 @@ std::string Player::slotsToString(const bool formatted) const
 }
 int Player::slotIndex(const int val)
 {
+
     int ret  = -1;
     if (val >= 0 && val <= Game::MAX_CARD_VALUE)
     {
@@ -116,7 +117,7 @@ int Player::slotIndex(const int val)
     }
     return ret;
 }
-int Player::slotHuer(const int index)
+int Player::slotValue(const int index)
 {
     if (index >= 0 and index < Player::NUM_SLOTS)
     {
