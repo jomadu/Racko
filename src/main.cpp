@@ -39,6 +39,6 @@ int main()
 
     std::cout << game.toString() << std::endl;
 
-    // Singleton cleanup
+    // Singleton cleanupp
     Logger::deleteInstance();
 }
