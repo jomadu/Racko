@@ -6,8 +6,6 @@
 
 int main()
 {
-    auto &logger = Logger::instance();
-
     Game game;
     game.addPlayer<Computer>("Zoidberg");
     game.addPlayer<Human>("Max");
