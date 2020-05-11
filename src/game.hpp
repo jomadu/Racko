@@ -14,6 +14,9 @@ public:
     int turn() const;
 
     void createPlayers();
+    void createPlayer();
+    void removePlayer();
+    void updatePlayerName();
     template <class T>
     void addPlayer(const std::string &name)
     {
@@ -22,7 +25,6 @@ public:
             players_.push_back(std::make_shared<T>(name));
         }
     }
-    void removePlayer(const std::string& name);
 
     void deal();
     void shuffleDraw();

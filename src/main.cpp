@@ -7,17 +7,17 @@
 int main()
 {
     Game game;
-    game.addPlayer<Computer>("Zoidberg");
-    game.addPlayer<Human>("Max");
-    game.addPlayer<Human>("Becca");
 
-    game.deal();
     std::cout << "--------------------------------" << std::endl;
     std::cout << " ____   __    ___  __ _  __   _ " << std::endl;
     std::cout << "(  _ \\ / _\\  / __)(  / )/  \\ / \\" << std::endl;
     std::cout << " )   //    \\( (__  )  ((  O )\\_/" << std::endl;
     std::cout << "(__\\_)\\_/\\_/ \\___)(__\\_)\\__/ (_)" << std::endl;
     std::cout << "--------------------------------" << std::endl;
+    
+    game.createPlayers();
+    game.deal();
+    
     while (!game.gameOver())
     {
         game.playTurn();

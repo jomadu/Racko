@@ -40,31 +40,70 @@ int Game::turn() const
 
 void Game::createPlayers()
 {
-
-    // std::cout << "Create your players!" << std::endl;
-    // std::cout << playersToString() << std::endl;
-    // int draw_choice = -1;
-
-    // bool valid_input = false;
-    // while (!valid_input)
-    // {
-    //     std::cout << "Draw from:" << std::endl;
-    //     std::cout << "[0] - Draw Pile    : ?" << std::endl;
-    //     std::cout << "[1] - Discard Pile : " << discard.top() << std::endl;
-    //     std::cout << "> ";
-    //     std::cin >> draw_choice;
-    //     std::cout << std::endl;
-    //     valid_input = draw_choice == 0 || draw_choice == 1;
-    //     if (!valid_input)
-    //     {
-    //         std::cout << "Invalid input: must be 0 or 1" << std::endl;
-    //     }
-    // }
+    int action = -1;
+    std::cout << "Create Players" << std::endl;
+    while (action != 3)
+    {
+        action = Utils::optionsMenu(
+            "",
+            "Current Players:\n" + playersToString() + "\nActions",
+            {"Create Player", "Remove Player", "Update Player Name", "Begin Game"});
+        if (action == 0)
+        {
+            createPlayer();
+        }
+        else if (action == 1)
+        {
+            removePlayer();
+        }
+        else if (action == 2)
+        {
+            updatePlayerName();
+        }
+    }
 }
-void Game::removePlayer(const std::string& name)
+void Game::createPlayer()
 {
-
+    std::cout << "Create Player:" << std::endl;
+    auto player_type = Utils::optionsMenu("", "Select player type", {"Human", "Computer"});
+    auto player_name = Utils::validatedStringInput("", "Type a player name", ".*");
+    if (player_type == 0)
+    {
+        std::cout << "Adding Human player with name " << player_name << std::endl;
+        addPlayer<Human>(player_name);
+    }
+    else if (player_type == 1)
+    {
+        std::cout << "Adding Computer player with name " << player_name << std::endl;
+        addPlayer<Computer>(player_name);
+    }
 }
+void Game::removePlayer()
+{
+    std::vector<std::string> options;
+    for (auto i = 0; i < players_.size(); i++)
+    {
+        auto player = players_.at(i);
+        options.push_back(player->name());
+    }
+    auto player_index = Utils::optionsMenu("Remove Player", "Select player to remove", options);
+    players_.erase(players_.begin() + player_index);
+}
+void Game::updatePlayerName()
+{
+    std::cout << "Update Player Name" << std::endl;
+    std::vector<std::string> options;
+    for (auto i = 0; i < players_.size(); i++)
+    {
+        auto player = players_.at(i);
+        options.push_back(player->name());
+    }
+    auto player_index = Utils::optionsMenu("", "Select player to update", options);
+
+    auto player_name = Utils::validatedStringInput("", "Type the player's new name", ".*");
+    players_.at(player_index)->name(player_name);
+}
+
 void Game::deal()
 {
     for (auto i = 0; i < Player::NUM_SLOTS; i++)
@@ -141,6 +180,7 @@ std::string Game::playersToString() const
 {
     std::stringstream ss;
     ss << "Game::players_:" << std::endl;
+
     bool first = true;
     std::string del = "";
     for (auto player : players_)
@@ -149,11 +189,8 @@ std::string Game::playersToString() const
         {
             ss << std::endl;
         }
-        ss << del << player;
-        if (del == "")
-        {
-            del = ",";
-        }
+        ss << player->toString();
+        first = false;
     }
     return ss.str();
 }

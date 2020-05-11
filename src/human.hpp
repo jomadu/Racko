@@ -7,6 +7,7 @@ class Human : public Player
 {
 public:
     using Player::Player;
+    std::string toString() const override;
     bool takeTurn(std::stack<int>& draw, std::stack<int>& discard) override;
 };
 

@@ -32,13 +32,13 @@ public:
     virtual bool takeTurn(std::stack<int>& draw, std::stack<int>& discard) = 0;
 
     bool hasRacko() const;
-    std::string toString() const;
+    virtual std::string toString() const;
     std::string slotsToString(const bool formatted = false) const;
     static int slotIndex(const int val);
     static int slotUpperBound(const int index);
     static int slotLowerBound(const int index);
     static int slotStepSize();
-    friend std::ostream& operator<<(std::ostream& os, const Player& p);
+    friend std::ostream &operator<<(std::ostream &os, const Player &p);
 };
 
 #endif //PLAYER_HPP

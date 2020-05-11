@@ -1,6 +1,12 @@
 #include "human.hpp"
 #include "utils.hpp"
 
+std::string Human::toString() const
+{
+    std::stringstream ss;
+    ss << "Human::name_: " << name_ << ", Human::slots_: " << slotsToString();
+    return ss.str();
+}
 bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
 {
     std::cout << std::endl
@@ -8,7 +14,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     std::string title = "Current slots:\n" + slotsToString(true);
     std::string prompt = "Draw from:";
     std::vector<std::string> options = {"Draw Pile    : ?", "Discard Pile : " + std::to_string(discard.top())};
-    auto draw_choice = Utils::menu(title, prompt, options);
+    auto draw_choice = Utils::optionsMenu(title, prompt, options);
 
     int drawn_card;
     if (draw_choice == 0)
@@ -29,7 +35,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     title = "Current slots:\n" + slotsToString(true);
     prompt = "Drew card: (" + std::to_string(drawn_card) + ")";
     options = {"Discard", "Swap with a card in a slot"};
-    auto swap_choice = Utils::menu(title, prompt, options);
+    auto swap_choice = Utils::optionsMenu(title, prompt, options);
 
     if (swap_choice == 1)
     {
@@ -59,7 +65,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
             custom_selectors.push_back(slotUpperBound(i));
         }
 
-        auto slot_choice = Utils::menu(title, prompt, options, custom_selectors);
+        auto slot_choice = Utils::optionsMenu(title, prompt, options, custom_selectors);
         auto slot_choice_index = slotIndex(slot_choice);
 
         auto swapped_card = slots_.at(slot_choice_index);
