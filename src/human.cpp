@@ -1,27 +1,14 @@
 #include "human.hpp"
+#include "utils.hpp"
 
 bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
 {
     std::cout << std::endl
               << "### HUMAN: " << name_ << "'s turn! ###" << std::endl;
-    std::cout << "Current slots: " << std::endl;
-    std::cout << slotsToString(true) << std::endl;
-    int draw_choice = -1;
-    bool valid_input = false;
-    while (!valid_input)
-    {
-        std::cout << "Draw from:" << std::endl;
-        std::cout << "[0] - Draw Pile    : ?" << std::endl;
-        std::cout << "[1] - Discard Pile : " << discard.top() << std::endl;
-        std::cout << "> ";
-        std::cin >> draw_choice;
-        std::cout << std::endl;
-        valid_input = draw_choice == 0 || draw_choice == 1;
-        if (!valid_input)
-        {
-            std::cout << "Invalid input: must be 0 or 1" << std::endl;
-        }
-    }
+    std::string title = "Current slots:\n" + slotsToString(true);
+    std::string prompt = "Draw from:";
+    std::vector<std::string> options = {"Draw Pile    : ?", "Discard Pile : " + std::to_string(discard.top())};
+    auto draw_choice = Utils::menu(title, prompt, options);
 
     int drawn_card;
     if (draw_choice == 0)
@@ -39,57 +26,41 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
         std::cout << "Drew from discard pile: (" << drawn_card << ")" << std::endl;
     }
 
-    std::cout << "Current slots: " << std::endl;
-    std::cout << slotsToString(true) << std::endl;
-    int swap_choice = -1;
-    valid_input = false;
-    while (!valid_input)
-    {
-        std::cout << "Drew card: (" << drawn_card << ")" << std::endl;
-        std::cout << "[0] - Discard" << std::endl;
-        std::cout << "[1] - Swap with a card in a slot" << std::endl;
-        std::cout << "> ";
-        std::cin >> swap_choice;
-        std::cout << std::endl;
-        valid_input = swap_choice == 0 || swap_choice == 1;
-        if (!valid_input)
-        {
-            std::cout << "Invalid input: must be 0 or 1" << std::endl;
-        }
-    }
+    title = "Current slots:\n" + slotsToString(true);
+    prompt = "Drew card: (" + std::to_string(drawn_card) + ")";
+    options = {"Discard", "Swap with a card in a slot"};
+    auto swap_choice = Utils::menu(title, prompt, options);
+
     if (swap_choice == 1)
     {
-        std::cout << "Swap drawn card (" << drawn_card << ") with a card in a slot:" << std::endl;
-        std::cout << "Current slots:" << std::endl;
-        std::cout << slotsToString(true) << std::endl;
-        int slot_choice = -1;
-        int slot_choice_index = -1;
-        valid_input = false;
-        while (!valid_input)
+
+        title = "Swap drawn card (" + std::to_string(drawn_card) + ") with a card in a slot:\nCurrent slots:\n" + slotsToString(true);
+        std::stringstream prompt_ss;
+        prompt_ss << "Choose slot to swap with drawn card (" << drawn_card << "). (input: ";
+        auto i = 0;
+        std::string del = "";
+        while (i < 2 and i < Player::NUM_SLOTS)
         {
-            std::cout << "Choose slot to swap with drawn card (" << drawn_card << "). (input: ";
-            auto i = 0;
-            std::string del = "";
-            while (i < 2 and i < Human::NUM_SLOTS)
+            prompt_ss << del << slotUpperBound(i);
+            if (del == "")
             {
-                std::cout << del << slotUpperBound(i);
-                if (del == "")
-                {
-                    del = ", ";
-                }
-                i++;
+                del = ", ";
             }
-            std::cout << ", etc...)" << std::endl;
-            std::cout << "> ";
-            std::cin >> slot_choice;
-            std::cout << std::endl;
-            slot_choice_index = slotIndex(slot_choice);
-            valid_input = slot_choice % slotStepSize() == 0 && slot_choice_index >= 0;
-            if (!valid_input)
-            {
-                std::cout << "Invalid input: must be between a slot number." << std::endl;
-            }
+            i++;
         }
+        prompt_ss << ", etc...)" << std::endl;
+        prompt = prompt_ss.str();
+        options.clear();
+        std::vector<int> custom_selectors;
+        auto current_slots = slots();
+        for (auto i = Player::NUM_SLOTS - 1; i >= 0; i--)
+        {
+            options.push_back(std::to_string(current_slots.at(i)));
+            custom_selectors.push_back(slotUpperBound(i));
+        }
+
+        auto slot_choice = Utils::menu(title, prompt, options, custom_selectors);
+        auto slot_choice_index = slotIndex(slot_choice);
 
         auto swapped_card = slots_.at(slot_choice_index);
 

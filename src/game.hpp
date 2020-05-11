@@ -13,6 +13,7 @@ public:
     std::vector<std::shared_ptr<Player>> players() const;
     int turn() const;
 
+    void createPlayers();
     template <class T>
     void addPlayer(const std::string &name)
     {
@@ -21,6 +22,8 @@ public:
             players_.push_back(std::make_shared<T>(name));
         }
     }
+    void removePlayer(const std::string& name);
+
     void deal();
     void shuffleDraw();
     void playTurn();

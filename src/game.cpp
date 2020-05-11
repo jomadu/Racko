@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "human.hpp"
 #include "computer.hpp"
+#include "utils.hpp"
 #include <random>
 #include <algorithm>
 #include <iterator>
@@ -37,6 +38,33 @@ int Game::turn() const
     return turn_;
 }
 
+void Game::createPlayers()
+{
+
+    // std::cout << "Create your players!" << std::endl;
+    // std::cout << playersToString() << std::endl;
+    // int draw_choice = -1;
+
+    // bool valid_input = false;
+    // while (!valid_input)
+    // {
+    //     std::cout << "Draw from:" << std::endl;
+    //     std::cout << "[0] - Draw Pile    : ?" << std::endl;
+    //     std::cout << "[1] - Discard Pile : " << discard.top() << std::endl;
+    //     std::cout << "> ";
+    //     std::cin >> draw_choice;
+    //     std::cout << std::endl;
+    //     valid_input = draw_choice == 0 || draw_choice == 1;
+    //     if (!valid_input)
+    //     {
+    //         std::cout << "Invalid input: must be 0 or 1" << std::endl;
+    //     }
+    // }
+}
+void Game::removePlayer(const std::string& name)
+{
+
+}
 void Game::deal()
 {
     for (auto i = 0; i < Player::NUM_SLOTS; i++)
@@ -68,6 +96,7 @@ void Game::playTurn()
     }
     if (draw_.size() == 0)
     {
+        restoreDrawFromDiscard();
     }
 }
 bool Game::gameOver() const
