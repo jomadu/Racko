@@ -72,7 +72,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
             std::string del = "";
             while (i < 2 and i < Human::NUM_SLOTS)
             {
-                std::cout << del << slotValue(i);
+                std::cout << del << slotUpperBound(i);
                 if (del == "")
                 {
                     del = ", ";
@@ -93,7 +93,7 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
 
         auto swapped_card = slots_.at(slot_choice_index);
 
-        std::cout << "Swapping card in slot " << slotValue(slot_choice_index) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+        std::cout << "Swapping card in slot " << slotUpperBound(slot_choice_index) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
 
         slots_[slot_choice_index] = drawn_card;
 

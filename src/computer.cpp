@@ -14,7 +14,7 @@ bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
         discard.pop();
         std::cout << "Drew from discard pile: (" << drawn_card << ")" << std::endl;
         auto swapped_card = slots_.at(discard_best_slot);
-        std::cout << "Swapping card in slot " << slotValue(discard_best_slot) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+        std::cout << "Swapping card in slot " << slotUpperBound(discard_best_slot) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
         slots_.at(discard_best_slot) = drawn_card;
         discard.push(swapped_card);
     }
@@ -27,7 +27,7 @@ bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
         if (draw_best_slot >= 0)
         {
             auto swapped_card = slots_.at(draw_best_slot);
-            std::cout << "Swapping card in slot " << slotValue(draw_best_slot) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
+            std::cout << "Swapping card in slot " << slotUpperBound(draw_best_slot) << " (" << swapped_card << ") with drawn card (" << drawn_card << ")" << std::endl;
             slots_.at(draw_best_slot) = drawn_card;
             discard.push(swapped_card);
         }
@@ -55,12 +55,11 @@ int Computer::bestSlot(int card) const
 {
     auto ret = -1;
 
-    auto step_size = slotStepSize();
     auto card_slot_index = slotIndex(card);
     if (card_slot_index >= 0)
     {
-        auto upper_bound_inc = step_size * (card_slot_index + 1);
-        auto lower_bound = step_size * (card_slot_index);
+        auto upper_bound_inc = Player::slotUpperBound(card_slot_index);
+        auto lower_bound = Player::slotLowerBound(card_slot_index);
         auto existing_card = slots_.at(card_slot_index);
         if (existing_card <= lower_bound || existing_card > upper_bound_inc)
         {

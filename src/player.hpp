@@ -35,7 +35,8 @@ public:
     std::string toString() const;
     std::string slotsToString(const bool formatted = false) const;
     static int slotIndex(const int val);
-    static int slotValue(const int index);
+    static int slotUpperBound(const int index);
+    static int slotLowerBound(const int index);
     static int slotStepSize();
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 };
