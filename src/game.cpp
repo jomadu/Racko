@@ -44,9 +44,20 @@ void Game::createPlayers()
     std::cout << "Create Players" << std::endl;
     while (action != "Begin Game")
     {
+        std::stringstream prompt_ss;
+        if (players_.size())
+        {
+            prompt_ss << "Players:" << std::endl;
+            for (auto i = 0; i < players_.size(); i++)
+            {
+                prompt_ss << i << ". " << players_.at(i)->name() << std::endl;
+            }
+        }
+        prompt_ss << "Choose an Action";
+
         action = std::get<2>(Utils::optionsMenu(
             "",
-            "\n" + playersToString() + "\n\nChoose an Action",
+            prompt_ss.str(),
             {"Create Player", "Remove Player", "Update Player Name", "Begin Game"}));
         if (action == "Create Player")
         {
@@ -194,21 +205,21 @@ std::string Game::playersToString() const
     ss << "Players:" << std::endl;
     if (players_.size())
     {
-    bool first = true;
-    std::string del = "";
-    for (auto player : players_)
-    {
-        if (!first)
+        bool first = true;
+        std::string del = "";
+        for (auto player : players_)
         {
-            ss << std::endl;
+            if (!first)
+            {
+                ss << std::endl;
+            }
+            ss << player->toString();
+            first = false;
         }
-        ss << player->toString();
-        first = false;
     }
-    
-    }
-    else{
-        ss << "No players yet ...";
+    else
+    {
+        ss << "No players";
     }
     return ss.str();
 }

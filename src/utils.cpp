@@ -108,3 +108,14 @@ std::string Utils::validatedStringInput(const std::string &title, const std::str
     }
     return input;
 }
+
+std::string Utils::hLine()
+{
+    std::stringstream ss;
+    for (auto i = 0; i < Utils::MAX_TERM_WIDTH; i ++)
+    {
+        ss << "-";
+    }
+    return ss.str();
+}
+
