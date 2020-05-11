@@ -40,23 +40,23 @@ int Game::turn() const
 
 void Game::createPlayers()
 {
-    int action = -1;
+    std::string action = "";
     std::cout << "Create Players" << std::endl;
-    while (action != 3)
+    while (action != "Begin Game")
     {
-        action = Utils::optionsMenu(
+        action = std::get<2>(Utils::optionsMenu(
             "",
-            "Current Players:\n" + playersToString() + "\nActions",
-            {"Create Player", "Remove Player", "Update Player Name", "Begin Game"});
-        if (action == 0)
+            "\n" + playersToString() + "\n\nChoose an Action",
+            {"Create Player", "Remove Player", "Update Player Name", "Begin Game"}));
+        if (action == "Create Player")
         {
             createPlayer();
         }
-        else if (action == 1)
+        else if (action == "Remove Player")
         {
             removePlayer();
         }
-        else if (action == 2)
+        else if (action == "Update Player Name")
         {
             updatePlayerName();
         }
@@ -65,14 +65,14 @@ void Game::createPlayers()
 void Game::createPlayer()
 {
     std::cout << "Create Player:" << std::endl;
-    auto player_type = Utils::optionsMenu("", "Select player type", {"Human", "Computer"});
+    auto player_type = std::get<2>(Utils::optionsMenu("", "Select player type", std::vector<std::string>({"Human", "Computer"})));
     auto player_name = Utils::validatedStringInput("", "Type a player name", ".*");
-    if (player_type == 0)
+    if (player_type == "Human")
     {
         std::cout << "Adding Human player with name " << player_name << std::endl;
         addPlayer<Human>(player_name);
     }
-    else if (player_type == 1)
+    else if (player_type == "Computer")
     {
         std::cout << "Adding Computer player with name " << player_name << std::endl;
         addPlayer<Computer>(player_name);
@@ -80,17 +80,29 @@ void Game::createPlayer()
 }
 void Game::removePlayer()
 {
+    if (players_.size() == 0)
+    {
+        std::cout << "No players to remove!" << std::endl;
+        return;
+    }
     std::vector<std::string> options;
     for (auto i = 0; i < players_.size(); i++)
     {
         auto player = players_.at(i);
         options.push_back(player->name());
     }
-    auto player_index = Utils::optionsMenu("Remove Player", "Select player to remove", options);
+    auto player_index = std::get<0>(Utils::optionsMenu("Remove Player", "Select player to remove", options));
     players_.erase(players_.begin() + player_index);
 }
+
 void Game::updatePlayerName()
 {
+    if (players_.size() == 0)
+    {
+        std::cout << "No players to update!" << std::endl;
+        return;
+    }
+
     std::cout << "Update Player Name" << std::endl;
     std::vector<std::string> options;
     for (auto i = 0; i < players_.size(); i++)
@@ -98,7 +110,7 @@ void Game::updatePlayerName()
         auto player = players_.at(i);
         options.push_back(player->name());
     }
-    auto player_index = Utils::optionsMenu("", "Select player to update", options);
+    auto player_index = std::get<0>(Utils::optionsMenu("", "Select player to update", options));
 
     auto player_name = Utils::validatedStringInput("", "Type the player's new name", ".*");
     players_.at(player_index)->name(player_name);
@@ -179,8 +191,9 @@ std::string Game::toString() const
 std::string Game::playersToString() const
 {
     std::stringstream ss;
-    ss << "Game::players_:" << std::endl;
-
+    ss << "Players:" << std::endl;
+    if (players_.size())
+    {
     bool first = true;
     std::string del = "";
     for (auto player : players_)
@@ -192,19 +205,24 @@ std::string Game::playersToString() const
         ss << player->toString();
         first = false;
     }
+    
+    }
+    else{
+        ss << "No players yet ...";
+    }
     return ss.str();
 }
 
 std::string Game::drawToString() const
 {
     std::stringstream ss;
-    ss << "Game::draw_: " << pileToString(draw_);
+    ss << "Draw Pile: " << pileToString(draw_);
     return ss.str();
 }
 std::string Game::discardToString() const
 {
     std::stringstream ss;
-    ss << "Game::discard_: " << pileToString(discard_);
+    ss << "Discard Pile: " << pileToString(discard_);
     return ss.str();
 }
 std::ostream &operator<<(std::ostream &os, const Game &g)

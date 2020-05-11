@@ -5,6 +5,7 @@
 #include <array>
 #include <stack>
 #include <iostream>
+#include "utils.hpp"
 
 class Player
 {
@@ -25,15 +26,16 @@ public:
 
     std::array<int, NUM_SLOTS> slots() const;
     void slots(const std::array<int, NUM_SLOTS> &slots);
-    
+
     int slot(const int idx) const;
     void slot(const int idx, const int val);
 
-    virtual bool takeTurn(std::stack<int>& draw, std::stack<int>& discard) = 0;
+    virtual bool takeTurn(std::stack<int> &draw, std::stack<int> &discard) = 0;
 
     bool hasRacko() const;
     virtual std::string toString() const;
     std::string slotsToString(const bool formatted = false) const;
+    std::string slotToString(const int index, const bool formatted = false, const int max_width = Utils::MAX_TERM_WIDTH) const;
     static int slotIndex(const int val);
     static int slotUpperBound(const int index);
     static int slotLowerBound(const int index);

@@ -1,10 +1,12 @@
 #include "human.hpp"
 #include "utils.hpp"
+#include "math.h"
+#include "game.hpp"
 
 std::string Human::toString() const
 {
     std::stringstream ss;
-    ss << "Human::name_: " << name_ << ", Human::slots_: " << slotsToString();
+    ss << "Human Name: " << name_ << ", Human Slots: " << slotsToString();
     return ss.str();
 }
 bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
@@ -14,10 +16,10 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     std::string title = "Current slots:\n" + slotsToString(true);
     std::string prompt = "Draw from:";
     std::vector<std::string> options = {"Draw Pile    : ?", "Discard Pile : " + std::to_string(discard.top())};
-    auto draw_choice = Utils::optionsMenu(title, prompt, options);
+    auto draw_choice = std::get<2>(Utils::optionsMenu(title, prompt, options));
 
     int drawn_card;
-    if (draw_choice == 0)
+    if (draw_choice == options.at(0))
     {
         drawn_card = draw.top();
         draw.pop();
@@ -35,12 +37,14 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
     title = "Current slots:\n" + slotsToString(true);
     prompt = "Drew card: (" + std::to_string(drawn_card) + ")";
     options = {"Discard", "Swap with a card in a slot"};
-    auto swap_choice = Utils::optionsMenu(title, prompt, options);
+    auto swap_choice = std::get<2>(Utils::optionsMenu(title, prompt, options));
 
-    if (swap_choice == 1)
+    if (swap_choice == options.at(1))
     {
 
         title = "Swap drawn card (" + std::to_string(drawn_card) + ") with a card in a slot:\nCurrent slots:\n" + slotsToString(true);
+
+        // Create prompt
         std::stringstream prompt_ss;
         prompt_ss << "Choose slot to swap with drawn card (" << drawn_card << "). (input: ";
         auto i = 0;
@@ -56,17 +60,21 @@ bool Human::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
         }
         prompt_ss << ", etc...)" << std::endl;
         prompt = prompt_ss.str();
-        options.clear();
-        std::vector<int> custom_selectors;
+
+        // Create options and custom selectors
+        std::vector<std::pair<std::string, std::string>> options;
         auto current_slots = slots();
+
+        auto digits_in_max_card_val = ceil(log10(Game::MAX_CARD_VALUE));
+        auto max_width = Utils::MAX_TERM_WIDTH - digits_in_max_card_val - std::string(":").size() - std::string("[]").size(); // - 2 for the '[' and ']' surrounding the options
         for (auto i = Player::NUM_SLOTS - 1; i >= 0; i--)
         {
-            options.push_back(std::to_string(current_slots.at(i)));
-            custom_selectors.push_back(slotUpperBound(i));
+            options.emplace_back(std::to_string(slotUpperBound(i)), slotToString(i,true, max_width));
         }
 
-        auto slot_choice = Utils::optionsMenu(title, prompt, options, custom_selectors);
-        auto slot_choice_index = slotIndex(slot_choice);
+        // Present menu
+        auto slot_choice = std::get<1>(Utils::optionsMenu(title, prompt, options));
+        auto slot_choice_index = slotIndex(std::stoi(slot_choice));
 
         auto swapped_card = slots_.at(slot_choice_index);
 

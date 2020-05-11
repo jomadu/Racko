@@ -38,7 +38,6 @@ public:
     std::string discardToString() const;
     friend std::ostream &operator<<(std::ostream &os, const Game &g);
 
-    static constexpr int MAX_TERM_WIDTH = 80;
     static constexpr int MAX_CARD_VALUE = 50;
     static constexpr int MAX_NUM_PLAYERS = MAX_CARD_VALUE / Player::NUM_SLOTS;
 

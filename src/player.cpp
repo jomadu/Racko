@@ -1,10 +1,10 @@
 #include "player.hpp"
-#include "game.hpp"
 #include <sstream>
 #include <iostream>
 #include <regex>
 #include <iomanip>
 #include "math.h"
+#include "game.hpp"
 
 Player::Player()
 {
@@ -68,7 +68,7 @@ bool Player::hasRacko() const
 std::string Player::toString() const
 {
     std::stringstream ss;
-    ss << "Player::name_: " << name_ << ", Player::slots_: " << slotsToString();
+    ss << "Player Name: " << name_ << ", Player Slots: " << slotsToString();
     return ss.str();
 }
 std::string Player::slotsToString(const bool formatted) const
@@ -76,20 +76,15 @@ std::string Player::slotsToString(const bool formatted) const
     std::stringstream ss;
     if (formatted)
     {
-        for (int i = slots_.size() - 1; i >= 0; i--)
+        auto digits_in_max_card_val = ceil(log10(Game::MAX_CARD_VALUE));
+        std::string slot_delim = " : ";
+        auto max_width = Utils::MAX_TERM_WIDTH - digits_in_max_card_val - slot_delim.size() - std::string("[]").size();
+        for (int i = Player::NUM_SLOTS - 1; i >= 0; i--)
         {
-            auto card_val = slots_[i];
-            auto digits_in_max_card_val = ceil(log10(Game::MAX_CARD_VALUE));
-            auto digits_in_curr_card_val = ceil(log10(card_val));
-            std::string slot_delim = ":";
-            auto num_dashes = int(card_val / float(Game::MAX_CARD_VALUE) * (Game::MAX_TERM_WIDTH - digits_in_max_card_val - slot_delim.size())) - digits_in_curr_card_val;
-            ss << std::setw(digits_in_max_card_val) << slotUpperBound(i) << slot_delim;
-            while (num_dashes > 0)
-            {
-                ss << '-';
-                num_dashes--;
-            }
-            ss << card_val << std::endl;
+            auto slot_val = slots_.at(i);
+
+            ss << "[" << std::setw(digits_in_max_card_val) << slotUpperBound(i) << "]" << slot_delim
+               << slotToString(i, true, max_width) << std::endl;
         }
     }
     else
@@ -107,10 +102,36 @@ std::string Player::slotsToString(const bool formatted) const
 
     return ss.str();
 }
+std::string Player::slotToString(const int index, const bool formatted, const int max_width) const
+{
+    if (index < 0 || index >= Player::NUM_SLOTS)
+    {
+        return "";
+    }
+
+    std::stringstream ss;
+    auto slot_val = slots_.at(index);
+    if (formatted)
+    {
+        auto digits_in_curr_card_val = ceil(log10(slot_val));
+        auto num_dashes = int(slot_val / float(Game::MAX_CARD_VALUE) * (max_width)) - digits_in_curr_card_val;
+        while (num_dashes > 0)
+        {
+            ss << '-';
+            num_dashes--;
+        }
+        ss << slot_val;
+    }
+    else
+    {
+        ss << slot_val;
+    }
+    return ss.str();
+}
 int Player::slotIndex(const int val)
 {
 
-    int ret  = -1;
+    int ret = -1;
     if (val >= 0 && val <= Game::MAX_CARD_VALUE)
     {
         ret = (val - 1) / slotStepSize();

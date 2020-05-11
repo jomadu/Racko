@@ -4,7 +4,7 @@
 std::string Computer::toString() const
 {
     std::stringstream ss;
-    ss << "Computer::name_: " << name_ << ", Computer::slots_: " << slotsToString();
+    ss << "Computer Name: " << name_ << ", Computer Slots: " << slotsToString();
     return ss.str();
 }
 bool Computer::takeTurn(std::stack<int> &draw, std::stack<int> &discard)
