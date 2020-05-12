@@ -41,22 +41,22 @@ int Game::turn() const
 void Game::createPlayers()
 {
     std::string action = "";
-    std::cout << "Create Players" << std::endl;
+    std::cout << Utils::h1("Create Players") << std::endl;
     while (action != "Begin Game")
     {
         std::stringstream prompt_ss;
         if (players_.size())
         {
-            prompt_ss << "Players:" << std::endl;
+            prompt_ss << Utils::h2("Players:") << std::endl;
             for (auto i = 0; i < players_.size(); i++)
             {
                 prompt_ss << i << ". " << players_.at(i)->name() << std::endl;
             }
+            prompt_ss << std::endl;
         }
-        prompt_ss << "Choose an Action";
+        prompt_ss << "Choose an Action:";
 
         action = std::get<2>(Utils::optionsMenu(
-            "",
             prompt_ss.str(),
             {"Create Player", "Remove Player", "Update Player Name", "Begin Game"}));
         if (action == "Create Player")
@@ -75,9 +75,9 @@ void Game::createPlayers()
 }
 void Game::createPlayer()
 {
-    std::cout << "Create Player:" << std::endl;
-    auto player_type = std::get<2>(Utils::optionsMenu("", "Select player type", std::vector<std::string>({"Human", "Computer"})));
-    auto player_name = Utils::validatedStringInput("", "Type a player name", ".*");
+    std::cout << Utils::h1("Create Player") << std::endl;
+    auto player_type = std::get<2>(Utils::optionsMenu("Select player type:", std::vector<std::string>({"Human", "Computer"})));
+    auto player_name = Utils::validatedStringInput("Enter player name:", ".*");
     if (player_type == "Human")
     {
         std::cout << "Adding Human player with name " << player_name << std::endl;
@@ -102,8 +102,12 @@ void Game::removePlayer()
         auto player = players_.at(i);
         options.push_back(player->name());
     }
-    auto player_index = std::get<0>(Utils::optionsMenu("Remove Player", "Select player to remove", options));
+    std::cout << Utils::h1("Remove Player") << std::endl;
+    auto selection = Utils::optionsMenu("Select player to remove:", options);
+    auto player_index = std::get<0>(selection);
+    auto player_name = std::get<2>(selection);
     players_.erase(players_.begin() + player_index);
+    std::cout << "Removed " << player_name << " from players" << std::endl;
 }
 
 void Game::updatePlayerName()
@@ -114,17 +118,21 @@ void Game::updatePlayerName()
         return;
     }
 
-    std::cout << "Update Player Name" << std::endl;
     std::vector<std::string> options;
     for (auto i = 0; i < players_.size(); i++)
     {
         auto player = players_.at(i);
         options.push_back(player->name());
     }
-    auto player_index = std::get<0>(Utils::optionsMenu("", "Select player to update", options));
+    std::cout << Utils::h1("Update Player Name") << std::endl;
+    auto selection = Utils::optionsMenu("Select player to update:", options);
+    auto player_index = std::get<0>(selection);
+    auto player_name = std::get<2>(selection);
 
-    auto player_name = Utils::validatedStringInput("", "Type the player's new name", ".*");
-    players_.at(player_index)->name(player_name);
+    auto new_player_name = Utils::validatedStringInput("Enter new player name:", ".*");
+    players_.at(player_index)->name(new_player_name);
+
+    std::cout << "Updated player name \"" << player_name << "\" -> \"" << new_player_name << "\"" << std::endl;
 }
 
 void Game::deal()

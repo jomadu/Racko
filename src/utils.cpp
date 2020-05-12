@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &title, const std::string &prompt, const std::vector<std::string> &choices)
+std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &prompt, const std::vector<std::string> &choices)
 {
     std::vector<std::pair<std::string, std::string>> choices_helper;
     for (auto i = 0; i < choices.size(); i++)
@@ -11,15 +11,11 @@ std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &
         choices_helper.emplace_back(std::to_string(i), choices.at(i));
     }
 
-    return optionsMenu(title, prompt, choices_helper);
+    return optionsMenu(prompt, choices_helper);
 }
 
-std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &title, const std::string &prompt, const std::vector<std::pair<std::string, std::string>> &choices)
+std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &prompt, const std::vector<std::pair<std::string, std::string>> &choices)
 {
-    if (title != "")
-    {
-        std::cout << title << std::endl;
-    }
     int selected_idx = -1;
     std::string selected_text = "";
     std::map<std::string, std::pair<int, std::string>> selectors;
@@ -41,7 +37,7 @@ std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &
     }
 
     std::stringstream menu_ss;
-    menu_ss << prompt << ":" << std::endl;
+    menu_ss << std::endl << prompt << std::endl;
     for (auto& pair : choices)
     {
         auto selector = "[" + pair.first + "]";
@@ -57,7 +53,6 @@ std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &
         std::cout << menu;
         std::cout << "> ";
         std::getline(std::cin, selected);
-        std::cout << std::endl;
 
         valid_input = selectors.count(selected);
         if (!valid_input)
@@ -84,19 +79,15 @@ std::tuple<int, std::string, std::string> Utils::optionsMenu(const std::string &
     return std::tuple<int, std::string, std::string>(selected_idx, selected, selected_text);
 }
 
-std::string Utils::validatedStringInput(const std::string &title, const std::string &prompt, const std::string &regex_validator)
+std::string Utils::validatedStringInput(const std::string &prompt, const std::string &regex_validator)
 {
-    if (title != "")
-    {
-        std::cout << title << std::endl;
-    }
     std::string input = "";
     bool valid_input = false;
     std::regex validator(regex_validator);
 
     while (!valid_input)
     {
-        std::cout << prompt << std::endl;
+        std::cout << std::endl << prompt << std::endl;
         std::cout << "> ";
         std::getline(std::cin, input);
         std::cout << std::endl;
@@ -118,4 +109,12 @@ std::string Utils::hLine()
     }
     return ss.str();
 }
+std::string Utils::h1(const std::string& txt)
+{
+    return "### " + txt + " ###";
+}
 
+std::string Utils::h2(const std::string& txt)
+{
+    return "--- " + txt + " ---";
+}
