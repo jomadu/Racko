@@ -33,4 +33,4 @@ build/release/*
 *.out
 *.app
 
-resources/*.mp4
+resources/images/*.mp4
