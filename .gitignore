@@ -32,3 +32,5 @@ build/release/*
 *.exe
 *.out
 *.app
+
+resources/*.mp4
