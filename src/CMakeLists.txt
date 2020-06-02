@@ -1,9 +1,14 @@
 set(BINARY ${CMAKE_PROJECT_NAME})
 
-file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.h *.cpp)
+set(SOURCES
+  computer.cpp
+  game.cpp
+  human.cpp
+  logger.cpp
+  player.cpp
+  utils.cpp
+)
 
-set(SOURCES ${SOURCES})
-
-add_executable(${BINARY}_run ${SOURCES})
+add_executable(${BINARY}_run ${SOURCES} main.cpp)
 
 add_library(${BINARY} STATIC ${SOURCES})

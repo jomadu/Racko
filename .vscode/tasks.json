@@ -1,53 +1,32 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build_release",
-            "type": "shell",
-            "command": "./makeAll.sh",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {
-            "label": "build_debug",
-            "type": "shell",
-            "command": "./makeAll.sh",
-            "args": [
-                "--debug"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build"
-        },
-        {
-            "label": "test_release",
-            "type": "shell",
-            "command": "${workspaceFolder}/build/release/test/Racko_test",
-            "dependsOn": [
-                "build_release"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "test"
-        },
-        {
-            "label": "test_debug",
-            "type": "shell",
-            "command": "${workspaceFolder}/build/debug/test/Racko_test",
-            "dependsOn": [
-                "build_debug"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "test"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "(gdb) Launch",
+          "type": "cppdbg",
+          "request": "launch",
+          // Resolved by CMake Tools:
+          "program": "${command:cmake.launchTargetPath}",
+          "args": [],
+          "stopAtEntry": false,
+          "cwd": "${workspaceFolder}",
+          "environment": [
+              {
+                  // add the directory where our target was built to the PATHs
+                  // it gets resolved by CMake Tools:
+                  "name": "PATH",
+                  "value": "$PATH:${command:cmake.launchTargetDirectory}"
+              }
+          ],
+          "externalConsole": true,
+          "MIMode": "gdb",
+          "setupCommands": [
+              {
+                  "description": "Enable pretty-printing for gdb",
+                  "text": "-enable-pretty-printing",
+                  "ignoreFailures": true
+              }
+          ]
+      }
+  ]
 }
